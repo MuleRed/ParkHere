@@ -18,6 +18,9 @@ public class App extends Application{
         super.onCreate();
         ParkingLotsList parkingLotsList = ParkingLotsList.get(this);
         parkingLotsList.addParkingLot(new ParkingLot(33.7490, -84.3880));
+        parkingLotsList.addParkingLot(new ParkingLot(33.7450, -84.37));
+        parkingLotsList.addParkingLot(new ParkingLot(33.7470, -84.3890));
+        parkingLotsList.addParkingLot(new ParkingLot(33.7480, -84.3880));
     }
 
 

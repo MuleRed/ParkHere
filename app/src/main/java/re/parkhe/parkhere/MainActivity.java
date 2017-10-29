@@ -14,9 +14,14 @@ import android.support.v7.app.AppCompatActivity;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import im.delight.android.location.SimpleLocation;
+import re.parkhe.parkhere.event.PayStationEvent;
 import re.parkhe.parkhere.fragments.MapViewFragment;
 import re.parkhe.parkhere.fragments.TicketFragment;
+import re.parkhe.parkhere.model.ParkingLotsList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private SimpleLocation location;
     private FragmentTransaction mFragmentTransaction;
     private FragmentManager mFragmentManager;
+    private AHBottomNavigation bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +40,17 @@ public class MainActivity extends AppCompatActivity {
         checkLocationPermission();
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.frame_layout, new MapViewFragment());
-        mFragmentTransaction.commit();
+        mFragmentTransaction.add(R.id.frame_layout, new MapViewFragment(), "map").commit();
 
-        AHBottomNavigation bottomNavigation = findViewById(R.id.bottom_navigation);
+
+        bottomNavigation = findViewById(R.id.bottom_navigation);
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("Maps", R.drawable.ic_map, R.color.md_material_blue_600);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem("Tickets", R.drawable.ic_car, R.color.md_material_blue_600);
 
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
+
+        bottomNavigation.disableItemAtPosition(1);
 
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
 
@@ -50,14 +58,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
                 if (!wasSelected) {
-                    if (position == 0) {
-                        mFragmentTransaction = mFragmentManager.beginTransaction();
-                        mFragmentTransaction.replace(R.id.frame_layout, new MapViewFragment());
-                        mFragmentTransaction.commit();
-                    } else {
-                        mFragmentTransaction = mFragmentManager.beginTransaction();
-                        mFragmentTransaction.replace(R.id.frame_layout, new TicketFragment());
-                        mFragmentTransaction.commit();
+                    switch (position) {
+                        case 0:
+                            if (mFragmentManager.findFragmentByTag("map") != null) {
+                                //if the fragment exists, show it.
+                                mFragmentManager.beginTransaction().show(mFragmentManager.findFragmentByTag("map")).commit();
+                            } else {
+                                //if the fragment does not exist, add it to fragment manager.
+                                mFragmentManager.beginTransaction().add(R.id.frame_layout, new MapViewFragment(), "map").commit();
+                            }
+                            if (mFragmentManager.findFragmentByTag("ticket") != null) {
+                                //if the other fragment is visible, hide it.
+                                mFragmentManager.beginTransaction().hide(mFragmentManager.findFragmentByTag("ticket")).commit();
+                            }
+                            break;
+                        case 1:
+                            if (mFragmentManager.findFragmentByTag("ticket") != null) {
+                                //if the fragment exists, show it.
+                                mFragmentManager.beginTransaction().show(mFragmentManager.findFragmentByTag("ticket")).commit();
+                            }
+                            if (mFragmentManager.findFragmentByTag("map") != null) {
+                                //if the other fragment is visible, hide it.
+                                mFragmentManager.beginTransaction().hide(mFragmentManager.findFragmentByTag("map")).commit();
+                            }
+                            break;
                     }
                 }
                 return true;
@@ -126,9 +150,6 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-
                 }
                 return;
             }
@@ -145,4 +166,28 @@ public class MainActivity extends AppCompatActivity {
             SimpleLocation.openSettings(this);
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe()
+    public void onEvent(PayStationEvent event) {
+        bottomNavigation.enableItemAtPosition(1);
+        bottomNavigation.setCurrentItem(1);
+        ParkingLotsList.hour_add = event.getId();
+        mFragmentManager.beginTransaction().add(R.id.frame_layout, new TicketFragment(), "ticket").commit();
+        mFragmentManager.beginTransaction().hide(mFragmentManager.findFragmentByTag("map")).commit();
+
+    }
+
+
 }

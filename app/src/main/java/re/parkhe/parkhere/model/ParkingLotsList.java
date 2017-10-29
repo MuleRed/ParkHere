@@ -9,8 +9,8 @@ import java.util.ArrayList;
  */
 
 public class ParkingLotsList {
+    public static int hour_add = 0;
     private static ParkingLotsList sParkingLotsList;
-
     private Context mContext;
     private ArrayList<ParkingLot> mParkingLots;
 

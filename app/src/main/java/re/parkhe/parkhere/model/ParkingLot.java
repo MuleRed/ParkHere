@@ -15,6 +15,10 @@ public class ParkingLot {
         this.longitude = longitude;
     }
 
+    public ParkingLot() {
+
+    }
+
     public double getLatitude() {
         return latitude;
     }

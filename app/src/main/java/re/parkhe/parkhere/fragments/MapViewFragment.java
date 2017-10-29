@@ -1,5 +1,6 @@
 package re.parkhe.parkhere.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,9 +23,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
+import java.util.Random;
 
 import re.parkhe.parkhere.R;
+import re.parkhe.parkhere.event.PayStationEvent;
 import re.parkhe.parkhere.model.ParkingLot;
 import re.parkhe.parkhere.model.ParkingLotsList;
 
@@ -54,6 +59,7 @@ public class MapViewFragment extends Fragment {
         }
 
         mMapView.getMapAsync(new OnMapReadyCallback() {
+            @SuppressLint("MissingPermission")
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
@@ -64,11 +70,11 @@ public class MapViewFragment extends Fragment {
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
                 googleMap.setMyLocationEnabled(true);
                 googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
+                Random rng = new Random();
                 for (ParkingLot parkingLot : mParkingLotsList.getParkingLots()) {
                     MarkerOptions options = new MarkerOptions().position(parkingLot.getLatLng());
-                    options.title("Parking Lot Title");
-                    options.snippet("$4 per hour");
+                    options.title("Atlanta Parking Lot");
+                    options.snippet(rng.nextInt(50) + " Spots Left ★★★★☆");
                     //TODO Add Stars
                     options.icon(BitmapDescriptorFactory.defaultMarker());
 
@@ -78,10 +84,25 @@ public class MapViewFragment extends Fragment {
                             int p = mMarkers.indexOf(marker);
                             final ParkingLot tempParkingLot = mParkingLotsList.getParkingLotsFromPostion(p);
                             new MaterialDialog.Builder(getActivity())
-                                    .title("Parking Lot Location")
-                                    .content("$4 Per Hour")
-                                    .positiveText("Pay")
+                                    .title("Local Atlanta Parking Lot")
+                                    .content("$5 Per Hour")
+                                    .positiveText("Buy a Spot")
                                     .neutralText("Get Directions")
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                            new MaterialDialog.Builder(getActivity())
+                                                    .title("Select Parking Time Length")
+                                                    .items(R.array.times)
+                                                    .itemsCallback(new MaterialDialog.ListCallback() {
+                                                        @Override
+                                                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                                            EventBus.getDefault().post(new PayStationEvent(which));
+                                                        }
+                                                    })
+                                                    .negativeText("Cancel").show();
+                                        }
+                                    })
                                     .onNeutral(new MaterialDialog.SingleButtonCallback() {
                                         @Override
                                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -98,7 +119,7 @@ public class MapViewFragment extends Fragment {
                 }
 
                 // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(33.7490, -84.3880)).zoom(12).build();
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(33.7490, -84.3880)).zoom(15).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
