@@ -86,7 +86,7 @@ public class TicketFragment extends Fragment {
         Random random = new Random();
         parking_spot_num = random.nextInt(100);
         spotTextView.setText("Spot: " + parking_spot_num);
-        costTextView.setText("Initial Spot Cost: $" + cost + " (Expires: " + expire_time + ")");
+        costTextView.setText("Initial Spot Cost: $" + total_cost + " (Expires: " + expire_time + ")");
 
 
         addTimeButton.setOnClickListener(new View.OnClickListener() {

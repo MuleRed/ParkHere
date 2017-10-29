@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("Maps", R.drawable.ic_map, R.color.md_material_blue_600);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Tickets", R.drawable.ic_car, R.color.md_material_blue_600);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem("Map", R.drawable.ic_map, R.color.md_material_blue_600);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Ticket", R.drawable.ic_car, R.color.md_material_blue_600);
 
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
