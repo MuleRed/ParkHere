@@ -15,6 +15,7 @@ Android App Screenshots:
 ![alt text](https://i.imgur.com/a0jncMN.png "Screenshot 4")
 
 Web App Screenshots:
-![alt text](https://i.imgur.com/SgZe85q.png "Screenshot 5")
-![alt text](https://i.imgur.com/lt5lCv7.png "Screenshot 6")
-![alt text](https://i.imgur.com/a0jncMN.png "Screenshot 7")
+![alt text](https://i.imgur.com/d2eK6aq.png "Screenshot 5")
+![alt text](https://i.imgur.com/rM6qYQY.png "Screenshot 6")
+![alt text](https://i.imgur.com/xbxpzqx.png "Screenshot 7")
+![alt text](https://i.imgur.com/U7pooJ4.png "Screenshot 8")
