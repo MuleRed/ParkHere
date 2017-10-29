@@ -3,4 +3,7 @@
     <string name="title_location_permission">GPS Location</string>
     <string name="text_location_permission">Accept to get current position</string>
     <string name="ok">Ok</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -69,6 +69,7 @@ public class MapViewFragment extends Fragment {
                     MarkerOptions options = new MarkerOptions().position(parkingLot.getLatLng());
                     options.title("Parking Lot Title");
                     options.snippet("$4 per hour");
+                    //TODO Add Stars
                     options.icon(BitmapDescriptorFactory.defaultMarker());
 
                     googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {

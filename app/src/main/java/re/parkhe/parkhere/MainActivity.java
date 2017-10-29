@@ -11,8 +11,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+
 import im.delight.android.location.SimpleLocation;
 import re.parkhe.parkhere.fragments.MapViewFragment;
+import re.parkhe.parkhere.fragments.TicketFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,13 +31,40 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkLocationPermission();
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.frame_layout, new MapViewFragment());
         mFragmentTransaction.commit();
 
-        checkLocationPermission();
+        AHBottomNavigation bottomNavigation = findViewById(R.id.bottom_navigation);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem("Maps", R.drawable.ic_map, R.color.md_material_blue_600);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Tickets", R.drawable.ic_car, R.color.md_material_blue_600);
+
+        bottomNavigation.addItem(item1);
+        bottomNavigation.addItem(item2);
+
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+
+        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                if (!wasSelected) {
+                    if (position == 0) {
+                        mFragmentTransaction = mFragmentManager.beginTransaction();
+                        mFragmentTransaction.replace(R.id.frame_layout, new MapViewFragment());
+                        mFragmentTransaction.commit();
+                    } else {
+                        mFragmentTransaction = mFragmentManager.beginTransaction();
+                        mFragmentTransaction.replace(R.id.frame_layout, new TicketFragment());
+                        mFragmentTransaction.commit();
+                    }
+                }
+                return true;
+            }
+        });
     }
+
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
